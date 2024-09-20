@@ -26,10 +26,6 @@ async function postForm(e) {
   const form = processOptions(
     new FormData(document.getElementById("checksform"))
   );
-
-  for (let entry of form.entries()) {
-    console.log(entry);
-  }
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
@@ -43,6 +39,7 @@ async function postForm(e) {
   if (response.ok) {
     displayErrors(data);
   } else {
+    displayException(data);
     throw new Error(data.error);
   }
 }
@@ -57,6 +54,7 @@ async function getStatus(e) {
   if (response.ok) {
     displayStatus(data);
   } else {
+    displayException(data);
     throw new Error(data.error);
   }
 }
@@ -88,5 +86,17 @@ function displayStatus(data) {
 
   document.getElementById("resultsModalTitle").innerText = heading;
   document.getElementById("results-content").innerHTML = results;
+  resultsModal.show();
+}
+
+function displayException(data) {
+  let heading = `An Exception Occured`;
+  let results = `<div>The API returned status code${data.status_code}</div>`;
+  results += `<div> Error number:<strong>${data.error_no}<strong></div>`;
+  results += `<div>Error text: <strong>${data.error}</strong></div>`;
+
+  document.getElementById("resultsModalTitle").innerText = heading;
+  document.getElementById("results-content").innerHTML = results;
+
   resultsModal.show();
 }
